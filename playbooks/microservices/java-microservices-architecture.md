@@ -453,17 +453,242 @@ order.order.created.v1
 * Quartz 中写复杂业务
 * Quartz 直接改业务状态（Outbox 除外）
 
-### 6.2 Quartz 集群模型
+### 6.2 Quartz 集群原理（深度解析）
+
+#### 6.2.1 为什么需要集群
+
+**单节点问题：**
+```
+单节点 Quartz
+  ↓
+服务器宕机 / 升级
+  ↓
+所有定时任务停止
+  ↓
+业务中断 ❌
+```
+
+**集群解决方案：**
+```
+多节点 Quartz 集群
+  ↓
+任意节点宕机，其他节点继续工作
+  ↓
+任务不中断 ✅
+```
+
+#### 6.2.2 集群原理核心：数据库作为协调中心
+
+Quartz 集群不使用 ZooKeeper/Redis，而是**直接用数据库**协调：
 
 ```
-多个 Job 实例
-   ↓
-共享 QRTZ_* 表
-   ↓
-DB 行锁
-   ↓
-同一时间只有一个实例执行
+节点 A                    节点 B                    节点 C
+  ↓                        ↓                        ↓
+  └──────────────┬───────────────────────┘
+                 ↓
+         共享数据库（MySQL）
+                 ↓
+         QRTZ_* 表（11张表）
+                 ↓
+    通过数据库行锁实现分布式协调
 ```
+
+#### 6.2.3 核心表结构
+
+| 表名                    | 作用                |
+| --------------------- | ----------------- |
+| QRTZ_JOB_DETAILS      | 存储任务详情            |
+| QRTZ_TRIGGERS         | 存储触发器配置           |
+| QRTZ_CRON_TRIGGERS    | 存储 Cron 表达式       |
+| QRTZ_SCHEDULER_STATE  | 记录集群节点状态          |
+| **QRTZ_LOCKS**        | **分布式锁表（核心）**      |
+| QRTZ_FIRED_TRIGGERS   | 记录正在执行的任务         |
+
+#### 6.2.4 抢占式调度原理（关键）
+
+**问题：** 三个节点同时启动，谁来执行任务？
+
+**答案：** 谁先抢到锁，谁执行
+
+```
+时刻 T0: 任务需要触发
+  ↓
+节点 A、B、C 同时发现任务到期
+  ↓
+同时执行: SELECT * FROM QRTZ_LOCKS WHERE SCHED_NAME = 'SchedulerName' AND LOCK_NAME = 'TRIGGER_ACCESS'
+  ↓
+同时执行: UPDATE QRTZ_LOCKS SET LOCK_NAME = 'TRIGGER_ACCESS' WHERE SCHED_NAME = 'SchedulerName' AND LOCK_NAME = 'TRIGGER_ACCESS'
+  ↓
+数据库行锁生效，只有一个 UPDATE 成功
+  ↓
+假设节点 A 抢到锁
+  ↓
+节点 A: 执行任务 ✅
+节点 B: 抢锁失败，等待下次重试 ⏳
+节点 C: 抢锁失败，等待下次重试 ⏳
+```
+
+#### 6.2.5 完整执行流程
+
+```
+1. 节点启动
+   ↓
+   向 QRTZ_SCHEDULER_STATE 插入本节点记录
+   状态: STANDBY（待命）
+
+2. 抢夺 Leader（可选）
+   ↓
+   通过 QRTZ_LOCKS 抢夺
+   胜者成为 Leader，负责集群调度
+
+3. 任务调度循环（每 20-30s）
+   ↓
+   3.1 查询待触发任务
+       SELECT * FROM QRTZ_TRIGGERS WHERE NEXT_FIRE_TIME < NOW()
+
+   3.2 抢执行锁
+       UPDATE QRTZ_LOCKS SET LOCK_NAME = 'TRIGGER_ACCESS' WHERE LOCK_NAME = 'TRIGGER_ACCESS'
+       (利用 DB 行锁，只有一个节点成功)
+
+   3.3 锁成功的节点
+       ↓
+       a. 更新触发器状态: ACQUIRED
+       b. 插入 QRTZ_FIRED_TRIGGERS
+       c. 调用 Job.execute()
+       d. 更新下一次触发时间: NEXT_FIRE_TIME
+       e. 释放锁
+
+   3.4 锁失败的节点
+       ↓
+       跳过，等待下一轮
+
+4. 节点宕机检测
+   ↓
+   Leader 定期检查 QRTZ_SCHEDULER_STATE
+   发现某节点超时未更新（last_checkin_time）
+   ↓
+   假设该节点死亡，重新分配其任务
+```
+
+#### 6.2.6 Spring Boot 配置示例
+
+```yaml
+spring:
+  quartz:
+    job-store-type: jdbc  # 使用 JDBC 存储
+    jdbc:
+      initialize-schema: never  # 生产环境设为 never
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO  # 自动生成节点 ID
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_  # 表前缀
+            isClustered: true  # 启用集群 ⭐
+            clusterCheckinInterval: 20000  # 节点心跳 20s
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10  # 每个节点 10 个线程
+            threadPriority: 5
+```
+
+#### 6.2.7 集群关键参数说明
+
+| 参数                                     | 说明              | 推荐值   |
+| -------------------------------------- | --------------- | ----- |
+| org.quartz.jobStore.isClustered        | 是否启用集群          | true  |
+| org.quartz.jobStore.clusterCheckinInterval | 节点心跳间隔          | 20s   |
+| org.quartz.scheduler.instanceId        | 节点 ID 生成策略       | AUTO  |
+| org.quartz.scheduler.batchTriggerAcquisitionMaxCount | 一次获取任务数量（性能优化） | 50    |
+
+#### 6.2.8 集群环境注意事项
+
+**1. 时钟同步**
+```bash
+# 所有节点必须同步时间，否则任务会重复执行或漏执行
+ntpdate -u time.nist.gov
+```
+
+**2. 数据库连接池**
+```yaml
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20  # Quartz 集群需要更多连接
+```
+
+**3. 节点数量**
+```
+推荐: 2-3 个节点
+原因: 节点过多会增加数据库压力，且抢锁竞争激烈
+```
+
+**4. 任务执行时长**
+```java
+// ❌ 错误: 任务执行时间超过调度间隔
+@Scheduled(cron = "0 */1 * * * ?")  // 每分钟执行
+public void longRunningJob() {
+  Thread.sleep(70000);  // 执行 70 秒
+}
+
+// ✅ 正确: 任务执行时间远小于调度间隔
+@Scheduled(cron = "0 */10 * * * ?")  // 每 10 分钟执行
+public void shortJob() {
+  // 执行几秒钟
+}
+```
+
+#### 6.2.9 集群常见问题
+
+**Q1: 为什么任务重复执行了？**
+```
+原因:
+1. 时钟不同步
+2. clusterCheckinInterval 设置过大
+3. 任务执行时间超过调度间隔
+
+解决:
+1. 配置 NTP 同步
+2. 缩短心跳间隔到 15-20s
+3. 检查任务执行时长
+```
+
+**Q2: 节点宕机后任务会丢失吗？**
+```
+不会丢失。
+原因:
+- 任务状态存储在 QRTZ_TRIGGERS 表
+- 节点宕机后，Leader 会检测并重新分配
+- 下一次调度时正常执行
+```
+
+**Q3: 如何判断集群工作正常？**
+```sql
+-- 查看集群节点
+SELECT * FROM QRTZ_SCHEDULER_STATE;
+
+-- 正常输出示例:
+-- | INSTANCE_NAME           | LAST_CHECKIN_TIME    |
+-- | node-1689001234567      | 2024-07-10 10:30:25 |
+-- | node-1689001234890      | 2024-07-10 10:30:20 |
+-- | node-1689001235123      | 2024-07-10 10:30:28 |
+
+-- LAST_CHECKIN_TIME 应该持续更新
+```
+
+#### 6.2.10 集群 vs 单机对比
+
+| 特性   | 单机模式    | 集群模式              |
+| ---- | ------- | ----------------- |
+| 高可用  | ❌ 单点故障  | ✅ 节点故障自动转移         |
+| 负载分担 | ❌ 单机承担  | ✅ 多节点分担            |
+| 配置复杂度 | 简单      | 中等（需要共享数据库）         |
+| 数据库压力 | 低       | 中（心跳 + 抢锁）          |
+| 适用场景 | 小型项目    | 生产环境、关键业务          |
 
 ### 6.3 Quartz + Kafka 标准执行链路
 
