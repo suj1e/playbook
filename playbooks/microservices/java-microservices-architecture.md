@@ -110,7 +110,13 @@ order.order.created.v1
 
 ## 六、定时任务与调度（Quartz × Kafka）
 
-> Quartz 决定"什么时候"，Kafka 决定"谁来处理"。
+> 本章节用于规范：Quartz 如何与 Kafka 协作，实现时间驱动 + 状态驱动融合架构。
+
+> **核心原则：** Quartz 决定"什么时候"，Kafka 决定"谁来处理"。
+
+* Quartz：时间触发
+* Kafka：状态扩散
+* 业务服务：事件消费者
 
 ### 6.1 职责边界（强制）
 
@@ -122,6 +128,7 @@ order.order.created.v1
 | 业务服务   | 真正执行业务         |
 
 ❌ 禁止：
+
 * Quartz 中写复杂业务
 * Quartz 直接改业务状态（Outbox 除外）
 
@@ -155,7 +162,7 @@ Job 扫描状态
 
 ### 6.4 经典场景：订单超时关闭
 
-**Job（只扫描）**
+#### Job（只扫描）
 
 ```java
 public class OrderTimeoutScanJob implements Job {
@@ -166,7 +173,7 @@ public class OrderTimeoutScanJob implements Job {
 }
 ```
 
-**发布事件**
+#### 发布事件
 
 ```java
 kafkaTemplate.send(
@@ -176,7 +183,7 @@ kafkaTemplate.send(
 );
 ```
 
-**消费处理**
+#### 消费处理
 
 ```java
 @KafkaListener(topics = "order.order.timeout.v1")
@@ -185,20 +192,32 @@ public void onTimeout(OrderTimeoutEvent e) {
 }
 ```
 
-### 6.5 延迟任务 vs 定时任务
+### 6.5 Quartz + Outbox（强可靠）
+
+#### 使用场景
+
+* 核心状态变更
+* 不允许事件丢失
+
+#### 扫描模型
+
+```
+业务写库 + 写 Outbox
+   ↓
+Quartz 扫描 NEW
+   ↓
+Kafka 投递
+   ↓
+标记 SENT
+```
+
+### 6.6 延迟任务 vs 定时任务
 
 | 场景    | 方案             |
 | ----- | -------------- |
 | 精准定时  | Quartz         |
 | 高吞吐延迟 | Kafka 延迟 Topic |
 | 简单延迟  | Redis ZSet     |
-
-### 6.6 调度反模式（必须避免）
-
-* 用 Quartz 执行业务逻辑
-* Quartz 调 Quartz
-* Job 串行流程编排
-* Job 写多服务数据
 
 ### 6.7 防雪崩与安全设计
 
@@ -207,16 +226,27 @@ public void onTimeout(OrderTimeoutEvent e) {
 * Job 限流
 * Job 不形成调用链
 
+### 6.8 调度反模式（必须避免）
+
+* 用 Quartz 执行业务逻辑
+* Quartz 调 Quartz
+* Job 串行流程编排
+* Job 写多服务数据
+
+### 6.9 小结
+
+> Quartz 负责时间，Kafka 负责扩散，调度不执行业务，业务不依赖调度。
+
 ---
 
 ## 七、Outbox Pattern（强制）
 
-### 7.1 使用场景
+### 使用场景
 
 * DB 与 Kafka 必须一致
 * 不接受事件丢失
 
-### 7.2 表设计
+### 表设计
 
 ```sql
 CREATE TABLE outbox_event (
@@ -232,7 +262,7 @@ CREATE TABLE outbox_event (
 );
 ```
 
-### 7.3 标准流程
+### 标准流程
 
 ```
 业务事务
@@ -245,24 +275,6 @@ Quartz 扫描 Outbox
   ↓
 投递 Kafka
   ↓
-标记 SENT
-```
-
-### 7.4 Quartz + Outbox（强可靠）
-
-**使用场景：**
-* 核心状态变更
-* 不允许事件丢失
-
-**扫描模型：**
-
-```
-业务写库 + 写 Outbox
-   ↓
-Quartz 扫描 NEW
-   ↓
-Kafka 投递
-   ↓
 标记 SENT
 ```
 
