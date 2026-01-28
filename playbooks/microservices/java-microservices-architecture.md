@@ -900,7 +900,7 @@ Database
 | --------- | ---------------- | ---------- |
 | Metrics   | Prometheus + Grafana | 数值指标监控     |
 | Logging   | ELK / Loki        | 日志聚合分析     |
-| Tracing   | Jaeger / Tempo    | 分布式链路追踪    |
+| Tracing   | Grafana Tempo       | 分布式链路追踪    |
 
 ### 15.2 关键指标（必须监控）
 
