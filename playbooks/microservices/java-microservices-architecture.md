@@ -1297,6 +1297,118 @@ public class SecurityAuditAspect {
 | Kafka  | Header 传递          |
 | Quartz | Job 生成 Trace       |
 
+### 21.3 Grafana Tempo 配置
+
+#### 架构说明
+
+```
+应用服务
+  ↓ (OTLP)
+Tempo (Trace 存储)
+  ↓
+Grafana (UI 查询)
+  ↓
+Prometheus (Metrics 关联)
+```
+
+#### 应用配置（OTEL）
+
+```yaml
+# application.yml
+management:
+  tracing:
+    sampling:
+      probability: 1.0  # 100% 采样（生产环境可降低到 0.1）
+  propagation:
+    type: w3c  # 使用 W3C 标准
+
+# OTEL 导出配置
+spring:
+  application:
+    name: order-service
+  otel:
+    exporter:
+      otlp:
+        endpoint: http://tempo:4318  # Tempo OTLP endpoint
+        protocol: grpc
+    resource:
+      attributes:
+        service.name: ${spring.application.name}
+        deployment.environment: ${spring.profiles.active:dev}
+```
+
+#### Maven 依赖
+
+```xml
+<dependencies>
+    <!-- Micrometer Tracing -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-tracing-bridge-brave</artifactId>
+    </dependency>
+
+    <!-- OTEL Exporter -->
+    <dependency>
+      <groupId>io.opentelemetry</groupId>
+      <artifactId>opentelemetry-exporter-otlp</artifactId>
+    </dependency>
+
+    <!-- Spring Boot Starter -->
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-prometheus</artifactId>
+    </dependency>
+</dependencies>
+```
+
+#### Grafana 数据源配置
+
+1. **添加 Tempo 数据源**
+   - Configuration → Data Sources → Add data source
+   - 选择 "Tempo"
+   - URL: `http://tempo:3100`
+
+2. **添加 Prometheus 数据源**（关联 Metrics）
+   - URL: `http://prometheus:9090`
+
+3. **查询 Traces**
+   - 在 Grafana 中导航到 "Explore"
+   - 选择 "Tempo" 数据源
+   - 通过 TraceID、Service Name、Span Name 搜索
+   - 查看 Waterfall 视图分析调用链路
+
+4. **Metrics ↔ Traces 关联**
+   - 从 Grafana Dashboard 点击 Metrics 图表
+   - 选择 "Jump to Trace" 直接跳转到对应 Trace
+   - 从 Trace 页面可以查看相关 Metrics
+
+#### 查看 Trace 示例
+
+```bash
+# 1. 从日志中获取 TraceID
+grep "trace_id" logs/app.log
+
+# 2. 在 Grafana 中搜索 TraceID
+# Navigate to Explore → Tempo → Search by TraceID
+
+# 3. 分析调用链路
+# Waterfall 视图显示每个 Span 的耗时
+# 点击 Span 查看详细信息、Tags、Logs
+
+# 4. 关联 Metrics
+# 在 Trace 页面点击 "Connected Metrics"
+# 查看该 Service/Trace 相关的性能指标
+```
+
+### 21.4 Trace 关键检查点
+
+- [ ] OTEL 配置正确（endpoint 可达）
+- [ ] Trace 采样率合理（开发 100%，生产 10%）
+- [ ] traceparent Header 正确传递
+- [ ] Grafana Tempo 数据源已配置
+- [ ] 可以通过 TraceID 查询到完整调用链
+- [ ] Metrics 与 Traces 可以关联查询
+
 ---
 
 ## 二十二、架构审查检查清单
