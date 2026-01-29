@@ -6,8 +6,21 @@
 
 ## 1. 链表定义
 
-### Java
+### 1.1 节点定义
 
+```
+单向链表节点:
+┌───┬───┐
+│val│next│
+└───┴───┘
+
+双向链表节点:
+┌────┬────┬────┐
+│prev│val │next│
+└────┴────┴────┘
+```
+
+#### Java
 ```java
 // 单向链表
 public class ListNode {
@@ -25,8 +38,7 @@ public class DoublyListNode {
 }
 ```
 
-### Python
-
+#### Python
 ```python
 # 单向链表
 class ListNode:
@@ -44,42 +56,27 @@ class DoublyListNode:
 
 ---
 
-## 2. 遍历链表
+## 2. 反转链表
 
-### Java
+### 2.1 迭代反转
 
-```java
-// while 循环遍历
-ListNode curr = head;
-while (curr != null) {
-    // 处理 curr.val
-    curr = curr.next;
-}
-
-// for 循环遍历
-for (ListNode curr = head; curr != null; curr = curr.next) {
-    // 处理 curr.val
-}
 ```
+原链表: 1 -> 2 -> 3 -> null
 
-### Python
+步骤1:  1 -> 2 -> 3 -> null
+        ↑
+       prev
 
-```python
-# while 循环遍历
-curr = head
-while curr:
-    # 处理 curr.val
-    curr = curr.next
+步骤2:  1 <- 2    3 -> null
+              ↑   ↑
+            prev curr
+
+步骤3:  1 <- 2 <- 3    null
+                    ↑   ↑
+                  prev curr
 ```
-
----
-
-## 3. 反转链表
-
-### 3.1 迭代反转
 
 #### Java
-
 ```java
 public ListNode reverseList(ListNode head) {
     ListNode prev = null, curr = head;
@@ -96,7 +93,6 @@ public ListNode reverseList(ListNode head) {
 ```
 
 #### Python
-
 ```python
 def reverse_list(head: ListNode) -> ListNode:
     prev, curr = None, head
@@ -112,54 +108,23 @@ def reverse_list(head: ListNode) -> ListNode:
 
 ---
 
-### 3.2 递归反转
+## 3. 快慢指针
 
-#### Java
+### 3.1 找中点
 
-```java
-public ListNode reverseList(ListNode head) {
-    // 递归终止条件
-    if (head == null || head.next == null) {
-        return head;
-    }
+```
+链表: 1 -> 2 -> 3 -> 4 -> 5
+      ^         ^
+     slow     fast (步进为2)
 
-    // 递归反转后面的链表
-    ListNode newHead = reverseList(head.next);
+第一轮: slow=1, fast=1
+第二轮: slow=2, fast=3
+第三轮: slow=3, fast=5 (结束)
 
-    // 反转当前节点
-    head.next.next = head;
-    head.next = null;
-
-    return newHead;
-}
+返回: slow 指向 3 (中点)
 ```
 
-#### Python
-
-```python
-def reverse_list(head: ListNode) -> ListNode:
-    # 递归终止条件
-    if not head or not head.next:
-        return head
-
-    # 递归反转后面的链表
-    new_head = reverse_list(head.next)
-
-    # 反转当前节点
-    head.next.next = head
-    head.next = None
-
-    return new_head
-```
-
----
-
-## 4. 快慢指针
-
-### 4.1 找中点
-
 #### Java
-
 ```java
 public ListNode findMiddle(ListNode head) {
     ListNode slow = head, fast = head;
@@ -169,12 +134,11 @@ public ListNode findMiddle(ListNode head) {
         fast = fast.next.next;
     }
 
-    return slow;  // 奇数个节点返回中点，偶数个返回第二个中点
+    return slow;  // 奇数返回中点，偶数返回第二个中点
 }
 ```
 
 #### Python
-
 ```python
 def find_middle(head: ListNode) -> ListNode:
     slow = fast = head
@@ -183,15 +147,30 @@ def find_middle(head: ListNode) -> ListNode:
         slow = slow.next
         fast = fast.next.next
 
-    return slow  # 奇数个节点返回中点，偶数个返回第二个中点
+    return slow  # 奇数返回中点，偶数返回第二个中点
 ```
 
 ---
 
-### 4.2 找倒数第 k 个节点
+### 3.2 找倒数第 k 个节点
+
+```
+链表: 1 -> 2 -> 3 -> 4 -> 5, k = 2
+
+第一步: fast 先走 k 步
+       1 -> 2 -> 3 -> 4 -> 5
+       ↑              ↑
+      head          fast
+
+第二步: fast 和 slow 一起走
+       1 -> 2 -> 3 -> 4 -> 5
+            ↑         ↑
+          slow      fast
+
+fast 到达末尾，slow 指向倒数第 2 个节点 (4)
+```
 
 #### Java
-
 ```java
 public ListNode findKthFromEnd(ListNode head, int k) {
     ListNode fast = head, slow = head;
@@ -212,7 +191,6 @@ public ListNode findKthFromEnd(ListNode head, int k) {
 ```
 
 #### Python
-
 ```python
 def find_kth_from_end(head: ListNode, k: int) -> ListNode:
     fast = slow = head
@@ -231,55 +209,73 @@ def find_kth_from_end(head: ListNode, k: int) -> ListNode:
 
 ---
 
-## 5. 虚拟头节点
+## 4. 环检测
 
-**用途**：简化边界处理，统一头节点和非头节点的操作
+### 4.1 判断是否有环
 
-### Java
+```
+无环链表: 1 -> 2 -> 3 -> null
+                    fast 到达 null
 
+有环链表: 1 -> 2 -> 3
+              ^    |
+              |    v
+              5 <- 4
+
+fast 和 slow 最终会在环内相遇
+```
+
+#### Java
 ```java
-public ListNode dummyHeadExample(ListNode head) {
-    // 创建虚拟头节点
-    ListNode dummy = new ListNode(0);
-    dummy.next = head;
+public boolean hasCycle(ListNode head) {
+    ListNode slow = head, fast = head;
 
-    ListNode curr = dummy;
-    while (curr.next != null) {
-        // 处理 curr.next
-        curr = curr.next;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            return true;  // 相遇，有环
+        }
     }
 
-    return dummy.next;  // 返回真正的头节点
+    return false;  // fast 到达末尾，无环
 }
 ```
 
-### Python
-
+#### Python
 ```python
-def dummy_head_example(head: ListNode) -> ListNode:
-    # 创建虚拟头节点
-    dummy = ListNode(0)
-    dummy.next = head
+def has_cycle(head: ListNode) -> bool:
+    slow = fast = head
 
-    curr = dummy
-    while curr.next:
-        # 处理 curr.next
-        curr = curr.next
+    while fast and fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        if slow is fast:
+            return True  # 相遇，有环
 
-    return dummy.next  # 返回真正的头节点
+    return False  # fast 到达末尾，无环
 ```
 
 ---
 
-## 6. 合并两个有序链表
+## 5. 合并两个有序链表
 
-### 6.1 迭代合并
+### 5.1 迭代合并
+
+```
+l1: 1 -> 4 -> 7
+l2: 2 -> 3 -> 6
+
+合并: 1 -> 2 -> 3 -> 4 -> 6 -> 7
+
+过程: 比较 l1.val 和 l2.val
+     选小的加入结果链表
+```
 
 #### Java
-
 ```java
 public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-    ListNode dummy = new ListNode(0);
+    ListNode dummy = new ListNode(0);  // 虚拟头节点
     ListNode curr = dummy;
 
     while (list1 != null && list2 != null) {
@@ -301,10 +297,9 @@ public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
 ```
 
 #### Python
-
 ```python
 def merge_two_lists(list1: ListNode, list2: ListNode) -> ListNode:
-    dummy = ListNode(0)
+    dummy = ListNode(0)  # 虚拟头节点
     curr = dummy
 
     while list1 and list2:
@@ -324,204 +319,13 @@ def merge_two_lists(list1: ListNode, list2: ListNode) -> ListNode:
 
 ---
 
-### 6.2 递归合并
-
-#### Java
-
-```java
-public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-    if (list1 == null) return list2;
-    if (list2 == null) return list1;
-
-    if (list1.val <= list2.val) {
-        list1.next = mergeTwoLists(list1.next, list2);
-        return list1;
-    } else {
-        list2.next = mergeTwoLists(list1, list2.next);
-        return list2;
-    }
-}
-```
-
-#### Python
-
-```python
-def merge_two_lists(list1: ListNode, list2: ListNode) -> ListNode:
-    if not list1:
-        return list2
-    if not list2:
-        return list1
-
-    if list1.val <= list2.val:
-        list1.next = merge_two_lists(list1.next, list2)
-        return list1
-    else:
-        list2.next = merge_two_lists(list1, list2.next)
-        return list2
-```
-
----
-
-## 7. 环检测
-
-### 7.1 判断是否有环
-
-#### Java
-
-```java
-public boolean hasCycle(ListNode head) {
-    ListNode slow = head, fast = head;
-
-    while (fast != null && fast.next != null) {
-        slow = slow.next;
-        fast = fast.next.next;
-        if (slow == fast) {
-            return true;  // 相遇，有环
-        }
-    }
-
-    return false;  // fast 到达末尾，无环
-}
-```
-
-#### Python
-
-```python
-def has_cycle(head: ListNode) -> bool:
-    slow = fast = head
-
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-        if slow is fast:
-            return True  # 相遇，有环
-
-    return False  # fast 到达末尾，无环
-```
-
----
-
-### 7.2 找环的起点
-
-#### Java
-
-```java
-public ListNode detectCycle(ListNode head) {
-    ListNode slow = head, fast = head;
-
-    // 第一阶段：找相遇点
-    while (fast != null && fast.next != null) {
-        slow = slow.next;
-        fast = fast.next.next;
-        if (slow == fast) {
-            // 第二阶段：找环的起点
-            ListNode ptr1 = head;
-            ListNode ptr2 = slow;
-            while (ptr1 != ptr2) {
-                ptr1 = ptr1.next;
-                ptr2 = ptr2.next;
-            }
-            return ptr1;  // 环的起点
-        }
-    }
-
-    return null;  // 无环
-}
-```
-
-#### Python
-
-```python
-def detect_cycle(head: ListNode) -> ListNode:
-    slow = fast = head
-
-    # 第一阶段：找相遇点
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-        if slow is fast:
-            # 第二阶段：找环的起点
-            ptr1 = head
-            ptr2 = slow
-            while ptr1 is not ptr2:
-                ptr1 = ptr1.next
-                ptr2 = ptr2.next
-            return ptr1  # 环的起点
-
-    return None  # 无环
-```
-
----
-
-## 8. 常用技巧
-
-### 8.1 删除节点
-
-#### Java
-
-```java
-// 删除指定节点（已知前驱节点）
-public void deleteNode(ListNode prev) {
-    prev.next = prev.next.next;
-}
-
-// 删除指定节点（只知道要删除的节点本身）
-public void deleteNode(ListNode node) {
-    node.val = node.next.val;    // 复制下一个节点的值
-    node.next = node.next.next;  // 跳过下一个节点
-}
-```
-
-#### Python
-
-```python
-# 删除指定节点（已知前驱节点）
-def delete_node(prev: ListNode):
-    prev.next = prev.next.next
-
-# 删除指定节点（只知道要删除的节点本身）
-def delete_node(node: ListNode):
-    node.val = node.next.val
-    node.next = node.next.next
-```
-
----
-
-### 8.2 链表长度
-
-#### Java
-
-```java
-public int getLength(ListNode head) {
-    int length = 0;
-    while (head != null) {
-        length++;
-        head = head.next;
-    }
-    return length;
-}
-```
-
-#### Python
-
-```python
-def get_length(head: ListNode) -> int:
-    length = 0
-    while head:
-        length += 1
-        head = head.next
-    return length
-```
-
----
-
-## 9. 复杂度总结
+## 6. 复杂度总结
 
 | 操作 | 时间复杂度 | 空间复杂度 |
 |------|-----------|-----------|
 | 遍历 | O(n) | O(1) |
 | 反转（迭代） | O(n) | O(1) |
-| 反转（递归） | O(n) | O(n)（递归栈） |
+| 反转（递归） | O(n) | O(n) |
 | 快慢指针 | O(n) | O(1) |
 | 合并有序链表 | O(n + m) | O(1) |
 | 环检测 | O(n) | O(1) |

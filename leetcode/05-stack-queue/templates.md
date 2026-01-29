@@ -1,107 +1,51 @@
 # 栈和队列代码模板
 
-栈（Stack）和队列（Queue）是两种基本的线性数据结构，栈是"后进先出"（LIFO），队列是"先进先出"（FIFO）。
+栈是 LIFO（后进先出），队列是 FIFO（先进先出）。
 
 ---
 
-## 1. 基本定义和初始化
+## 1. 栈的基本操作
 
-### 1.1 栈 (Stack)
+### 1.1 初始化和操作
+
+```
+栈操作图解:
+
+push(1):  [1]
+          ↑
+         top
+
+push(2):  [1, 2]
+            ↑
+          top
+
+pop():    弹出 2
+          [1]
+          ↑
+         top
+```
 
 #### Java
-
 ```java
-import java.util.*;
-
-// 方法1：使用 Deque 作为栈（推荐）
+// 推荐使用 Deque
 Deque<Integer> stack = new ArrayDeque<>();
-// 或
-Deque<Integer> stack = new LinkedList<>();
 
-// 方法2：使用 Stack 类（不推荐，已过时）
-Stack<Integer> stack = new Stack<>();
+// 入栈
+stack.push(1);
+
+// 出栈
+int top = stack.pop();
+
+// 查看栈顶
+int peek = stack.peek();
+
+// 判空
+boolean empty = stack.isEmpty();
 ```
 
 #### Python
-
 ```python
 # 使用 list 作为栈
-stack = []
-
-# 或使用 collections.deque（更高效）
-from collections import deque
-stack = deque()
-```
-
----
-
-### 1.2 队列 (Queue)
-
-#### Java
-
-```java
-// 使用 Deque 作为队列
-Deque<Integer> queue = new ArrayDeque<>();
-// 或
-Queue<Integer> queue = new LinkedList<>();
-
-// 使用 PriorityQueue（优先队列）
-PriorityQueue<Integer> pq = new PriorityQueue<>();
-PriorityQueue<Integer> maxPQ = new PriorityQueue<>(Collections.reverseOrder());
-```
-
-#### Python
-
-```python
-# 使用 collections.deque 作为队列
-from collections import deque
-queue = deque()
-
-# 使用 queue.Queue（线程安全）
-from queue import Queue
-q = Queue()
-
-# 使用 heapq 作为优先队列
-import heapq
-min_heap = []
-max_heap = []  # 通过负数实现
-```
-
----
-
-## 2. 栈的基本操作
-
-### 2.1 标准操作
-
-#### Java
-
-```java
-Deque<Integer> stack = new ArrayDeque<>();
-
-// 入栈（push）
-stack.push(1);
-stack.addFirst(1);  // 等价操作
-
-// 出栈（pop）
-int top = stack.pop();
-// 或
-int top = stack.removeFirst();
-
-// 查看栈顶元素（不删除）
-int peek = stack.peek();
-// 或
-int peek = stack.peekFirst();
-
-// 判断栈是否为空
-boolean empty = stack.isEmpty();
-
-// 获取栈大小
-int size = stack.size();
-```
-
-#### Python
-
-```python
 stack = []
 
 # 入栈
@@ -110,55 +54,63 @@ stack.append(1)
 # 出栈
 top = stack.pop()
 
-# 查看栈顶元素（不删除）
+# 查看栈顶
 top = stack[-1]
-
-# 判断栈是否为空
-empty = len(stack) == 0
-
-# 获取栈大小
-size = len(stack)
 ```
 
 ---
 
-### 2.2 单调栈模板
+## 2. 单调栈
 
-**单调递增栈**（栈底到栈顶递增）
+### 2.1 单调递增栈（找下一个更大元素）
+
+**适用场景**：下一个更大元素、每日温度
+
+```
+数组: [2, 1, 5, 6, 2, 3]
+
+单调递增栈（栈底 -> 栈顶 递增）:
+
+i=0, num=2: stack=[2]
+i=1, num=1: stack=[1,2]  (1<2, 直接入栈)
+i=2, num=5: 弹出2(5>2), 弹出1(5>1)
+           stack=[5]
+           result[0]=5, result[1]=5
+
+i=3, num=6: 弹出5(6>5)
+           stack=[6]
+           result[2]=6
+
+i=4, num=2: stack=[2,6]
+i=5, num=3: 弹出2(3>2)
+           stack=[3,6]
+           result[4]=3
+```
 
 #### Java
-
 ```java
-// 单调递增栈：用于找下一个更大元素
-int[] nums = {2, 1, 5, 6, 2, 3};
-int n = nums.length;
-int[] result = new int[n];
+// 单调递增栈
+int[] result = new int[nums.length];
 Arrays.fill(result, -1);  // 默认值
-
 Deque<Integer> stack = new ArrayDeque<>();  // 存储索引
 
-for (int i = 0; i < n; i++) {
+for (int i = 0; i < nums.length; i++) {
     // 当前元素大于栈顶元素，弹出栈顶
     while (!stack.isEmpty() && nums[i] > nums[stack.peek()]) {
         int top = stack.pop();
-        result[top] = nums[i];  // 记录下一个更大元素
+        result[top] = nums[i];
     }
     stack.push(i);
 }
 ```
 
 #### Python
-
 ```python
 # 单调递增栈
-nums = [2, 1, 5, 6, 2, 3]
-n = len(nums)
-result = [-1] * n  # 默认值
+result = [-1] * len(nums)
+stack = []
 
-stack = []  # 存储索引
-
-for i in range(n):
-    # 当前元素大于栈顶元素，弹出栈顶
+for i in range(len(nums)):
     while stack and nums[i] > nums[stack[-1]]:
         top = stack.pop()
         result[top] = nums[i]
@@ -167,153 +119,102 @@ for i in range(n):
 
 ---
 
-**单调递减栈**（栈底到栈顶递减）
+## 3. 单调队列（滑动窗口最大值）
+
+### 3.1 单调递减队列
+
+**适用场景**：滑动窗口最大值
+
+```
+数组: [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+
+单调递减队列（存索引，值递减）:
+
+窗口[0,2]=[1,3,-1]: deque=[1] (值3最大)
+窗口[1,3]=[3,-1,-3]: deque=[1,2] (值3,-1)
+窗口[2,4]=[-1,-3,5]: 弹出1,2; 入4; deque=[4]
+                       result[2]=5
+
+特点: 队首始终是窗口最大值
+```
 
 #### Java
-
 ```java
-// 单调递减栈：用于找下一个更小元素
-Deque<Integer> stack = new ArrayDeque<>();
+public int[] maxSlidingWindow(int[] nums, int k) {
+    int[] result = new int[nums.length - k + 1];
+    Deque<Integer> deque = new ArrayDeque<>();  // 存储索引
 
-for (int i = 0; i < n; i++) {
-    // 当前元素小于栈顶元素，弹出栈顶
-    while (!stack.isEmpty() && nums[i] < nums[stack.peek()]) {
-        int top = stack.pop();
-        result[top] = nums[i];  // 记录下一个更小元素
+    for (int i = 0; i < nums.length; i++) {
+        // 移除窗口外的元素
+        while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
+            deque.pollFirst();
+        }
+
+        // 维护单调性：移除比当前元素小的
+        while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
+            deque.pollLast();
+        }
+
+        deque.offerLast(i);
+
+        // 记录窗口最大值
+        if (i >= k - 1) {
+            result[i - k + 1] = nums[deque.peekFirst()];
+        }
     }
-    stack.push(i);
+    return result;
 }
 ```
 
 #### Python
-
-```python
-# 单调递减栈
-stack = []
-
-for i in range(n):
-    while stack and nums[i] < nums[stack[-1]]:
-        top = stack.pop()
-        result[top] = nums[i]
-    stack.append(i)
-```
-
----
-
-## 3. 队列的基本操作
-
-### 3.1 标准操作
-
-#### Java
-
-```java
-Queue<Integer> queue = new LinkedList<>();
-
-// 入队
-queue.offer(1);
-
-// 出队
-int front = queue.poll();
-
-// 查看队首元素（不删除）
-int peek = queue.peek();
-
-// 判断队列是否为空
-boolean empty = queue.isEmpty();
-
-// 获取队列大小
-int size = queue.size();
-```
-
-#### Python
-
 ```python
 from collections import deque
-queue = deque()
 
-# 入队
-queue.append(1)
+def max_sliding_window(nums, k):
+    result = []
+    dq = deque()  # 存储索引
 
-# 出队
-front = queue.popleft()
+    for i in range(len(nums)):
+        # 移除窗口外的元素
+        while dq and dq[0] < i - k + 1:
+            dq.popleft()
 
-# 查看队首元素（不删除）
-front = queue[0]
+        # 维护单调性
+        while dq and nums[dq[-1]] < nums[i]:
+            dq.pop()
 
-# 判断队列是否为空
-empty = len(queue) == 0
+        dq.append(i)
 
-# 获取队列大小
-size = len(queue)
+        # 记录窗口最大值
+        if i >= k - 1:
+            result.append(nums[dq[0]])
+
+    return result
 ```
 
 ---
 
-### 3.2 单调队列模板（滑动窗口最大值）
+## 4. 括号匹配
+
+### 4.1 栈匹配模板
+
+**适用场景**：有效的括号
+
+```
+输入: "{[()]}"
+
+步骤:
+1. '{' 入栈: ['{']
+2. '[' 入栈: ['{', '[']
+3. '(' 入栈: ['{', '[', '(']
+4. ')' 匹配 '(': 弹出: ['{', '[']
+5. ']' 匹配 '[': 弹出: ['{']
+6. '}' 匹配 '{': 弹出: []
+
+栈为空，返回 true
+```
 
 #### Java
-
-```java
-// 单调递减队列：用于滑动窗口最大值
-int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
-int k = 3;
-
-int[] result = new int[nums.length - k + 1];
-Deque<Integer> deque = new ArrayDeque<>();  // 存储索引
-
-for (int i = 0; i < nums.length; i++) {
-    // 移除窗口外的元素
-    while (!deque.isEmpty() && deque.peekFirst() < i - k + 1) {
-        deque.pollFirst();
-    }
-
-    // 维护单调性：移除比当前元素小的
-    while (!deque.isEmpty() && nums[deque.peekLast()] < nums[i]) {
-        deque.pollLast();
-    }
-
-    deque.offerLast(i);
-
-    // 记录窗口最大值
-    if (i >= k - 1) {
-        result[i - k + 1] = nums[deque.peekFirst()];
-    }
-}
-```
-
-#### Python
-
-```python
-# 单调递减队列
-nums = [1, 3, -1, -3, 5, 3, 6, 7]
-k = 3
-
-result = []
-from collections import deque
-deque_window = deque()  # 存储索引
-
-for i in range(len(nums)):
-    # 移除窗口外的元素
-    while deque_window and deque_window[0] < i - k + 1:
-        deque_window.popleft()
-
-    # 维护单调性：移除比当前元素小的
-    while deque_window and nums[deque_window[-1]] < nums[i]:
-        deque_window.pop()
-
-    deque_window.append(i)
-
-    # 记录窗口最大值
-    if i >= k - 1:
-        result.append(nums[deque_window[0]])
-```
-
----
-
-## 4. 括号匹配模板
-
-### Java
-
 ```java
 public boolean isValid(String s) {
     Deque<Character> stack = new ArrayDeque<>();
@@ -322,8 +223,7 @@ public boolean isValid(String s) {
         if (c == '(' || c == '[' || c == '{') {
             stack.push(c);  // 左括号入栈
         } else {
-            if (stack.isEmpty()) return false;  // 栈为空，无法匹配
-
+            if (stack.isEmpty()) return false;
             char top = stack.pop();
             // 检查是否匹配
             if (c == ')' && top != '(') return false;
@@ -331,13 +231,11 @@ public boolean isValid(String s) {
             if (c == '}' && top != '{') return false;
         }
     }
-
-    return stack.isEmpty();  // 栈必须为空
+    return stack.isEmpty();
 }
 ```
 
-### Python
-
+#### Python
 ```python
 def is_valid(s):
     stack = []
@@ -356,222 +254,11 @@ def is_valid(s):
 
 ---
 
-## 5. 逆波兰表达式求值
+## 5. 复杂度总结
 
-### Java
-
-```java
-public int evalRPN(String[] tokens) {
-    Deque<Integer> stack = new ArrayDeque<>();
-
-    for (String token : tokens) {
-        if (isOperator(token)) {
-            // 弹出两个操作数
-            int b = stack.pop();
-            int a = stack.pop();
-            // 计算结果并入栈
-            stack.push(apply(a, b, token));
-        } else {
-            stack.push(Integer.parseInt(token));
-        }
-    }
-
-    return stack.pop();
-}
-
-private boolean isOperator(String token) {
-    return token.equals("+") || token.equals("-") ||
-           token.equals("*") || token.equals("/");
-}
-
-private int apply(int a, int b, String op) {
-    switch (op) {
-        case "+": return a + b;
-        case "-": return a - b;
-        case "*": return a * b;
-        case "/": return a / b;
-    }
-    return 0;
-}
-```
-
-### Python
-
-```python
-def eval_rpn(tokens):
-    stack = []
-
-    for token in tokens:
-        if token in '+-*/':
-            b = stack.pop()
-            a = stack.pop()
-            if token == '+':
-                stack.append(a + b)
-            elif token == '-':
-                stack.append(a - b)
-            elif token == '*':
-                stack.append(a * b)
-            else:
-                stack.append(int(a / b))
-        else:
-            stack.append(int(token))
-
-    return stack[0]
-```
-
----
-
-## 6. 最小栈（O(1) 获取最小值）
-
-### Java
-
-```java
-class MinStack {
-    private Deque<int[]> stack;  // [val, min]
-
-    public MinStack() {
-        stack = new ArrayDeque<>();
-    }
-
-    public void push(int val) {
-        if (stack.isEmpty()) {
-            stack.push(new int[]{val, val});
-        } else {
-            int min = Math.min(val, stack.peek()[1]);
-            stack.push(new int[]{val, min});
-        }
-    }
-
-    public void pop() {
-        stack.pop();
-    }
-
-    public int top() {
-        return stack.peek()[0];
-    }
-
-    public int getMin() {
-        return stack.peek()[1];
-    }
-}
-```
-
-### Python
-
-```python
-class MinStack:
-    def __init__(self):
-        self.stack = []  # [(val, min)]
-
-    def push(self, val: int):
-        if not self.stack:
-            self.stack.append((val, val))
-        else:
-            min_val = min(val, self.stack[-1][1])
-            self.stack.append((val, min_val))
-
-    def pop(self):
-        self.stack.pop()
-
-    def top(self) -> int:
-        return self.stack[-1][0]
-
-    def getMin(self) -> int:
-        return self.stack[-1][1]
-```
-
----
-
-## 7. BFS 队列模板
-
-### Java
-
-```java
-// 图的 BFS 遍历
-public void bfs(int[][] graph, int start) {
-    int n = graph.length;
-    boolean[] visited = new boolean[n];
-    Queue<Integer> queue = new LinkedList<>();
-
-    queue.offer(start);
-    visited[start] = true;
-
-    while (!queue.isEmpty()) {
-        int node = queue.poll();
-        // 处理当前节点
-        System.out.println(node);
-
-        // 遍历邻接节点
-        for (int neighbor : graph[node]) {
-            if (!visited[neighbor]) {
-                queue.offer(neighbor);
-                visited[neighbor] = true;
-            }
-        }
-    }
-}
-```
-
-### Python
-
-```python
-from collections import deque
-
-def bfs(graph, start):
-    n = len(graph)
-    visited = [False] * n
-    queue = deque([start])
-    visited[start] = True
-
-    while queue:
-        node = queue.popleft()
-        # 处理当前节点
-        print(node)
-
-        # 遍历邻接节点
-        for neighbor in graph[node]:
-            if not visited[neighbor]:
-                queue.append(neighbor)
-                visited[neighbor] = True
-```
-
----
-
-## 8. 复杂度总结
-
-| 操作 | 栈 | 队列 | 优先队列 |
-|------|-----|------|---------|
-| 入栈/入队 | O(1) | O(1) | O(log n) |
-| 出栈/出队 | O(1) | O(1) | O(log n) |
+| 操作 | 栈 | 队列 | 单调栈/队列 |
+|------|-----|------|-----------|
+| 入栈/入队 | O(1) | O(1) | O(1) |
+| 出栈/出队 | O(1) | O(1) | O(1) |
 | 查看栈顶/队首 | O(1) | O(1) | O(1) |
-| 单调栈处理 | O(n) | - | - |
-| 单调队列处理 | - | O(n) | - |
-
----
-
-## 9. 常见应用场景
-
-| 场景 | 使用数据结构 | 典型题目 |
-|------|-------------|---------|
-| 括号匹配 | 栈 | lc-20 有效的括号 |
-| 下一个更大元素 | 单调递增栈 | lc-496, lc-739 |
-| 柱状图最大矩形 | 单调递增栈 | lc-84 |
-| 滑动窗口最大值 | 单调递减队列 | lc-239 |
-| 表达式求值 | 栈 | lc-150, lc-224 |
-| 最小栈 | 辅助栈 | lc-155 |
-| 图的遍历 | 队列 | lc-200, lc-207 |
-| TopK 问题 | 优先队列 | lc-215, lc-347 |
-| 生成括号 | 栈（回溯） | lc-22 |
-
----
-
-## 10. 常见陷阱
-
-| 陷阱 | 说明 | 解决方案 |
-|------|------|----------|
-| 栈空操作 | 栈为空时 peek/pop 会抛异常 | 使用 isEmpty() 检查 |
-| 队列空操作 | 队列为空时 poll 返回 null，peek 返回 null | 注意 null 判断 |
-| 单调栈存储内容 | 存储值还是索引 | 通常存储索引便于计算距离 |
-| 优先队列顺序 | 默认小根堆 | 需要大根堆时使用 Comparator 或负数 |
-| 队列实现 | Java 不要用 Stack，用 Deque | Stack 是遗留类，性能较差 |
-| Python 队列 | 不要用 list 做队列（头部操作 O(n)） | 使用 deque 的 popleft() |
+| 单调处理 | O(n) | - | O(n) |

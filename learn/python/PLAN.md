@@ -25,16 +25,25 @@
 - ✅ 掌握 Python 3.10+ 语法和特性
 - ✅ 熟练使用现代包管理工具（uv / pixi）
 - ✅ 理解面向对象和函数式编程
+- ✅ 掌握常用数据结构与算法
 - ✅ 掌握异步编程基础
 - ✅ 具备工程化思维（测试、代码质量、CI/CD）
-- ✅ 能独立完成中型项目
+- ✅ 能通过算法面试（LeetCode 中等题）
 
 ### 技能树
 
 ```
 Python 核心技能
 ├── 语法基础
-├── 数据结构与算法
+├── 数据结构与算法 ⭐ 面试必备
+│   ├── 数组与字符串（双指针、滑动窗口）
+│   ├── 链表操作
+│   ├── 栈与队列
+│   ├── 哈希表
+│   ├── 树与图（遍历、搜索）
+│   ├── 动态规划
+│   ├── 回溯与贪心
+│   └── Python 特有优化技巧
 ├── OOP 与设计模式
 ├── 异步编程
 ├── 装饰器与元编程
@@ -104,7 +113,15 @@ Python 核心技能
 │  ├─ 异常处理                                                    │
 │  └─ 文件操作                                                    │
 │                                                                 │
-│  第3阶段：面向对象与进阶（3-4周）                                │
+│  第3阶段：数据结构与算法（4-6周）⭐ 面试必备                    │
+│  ├─ 基础数据结构（数组、链表、栈、队列、哈希表）                  │
+│  ├─ 树与图（二叉树、BST、图遍历、并查集）                        │
+│  ├─ 核心算法（双指针、滑动窗口、二分查找、排序）                 │
+│  ├─ 高级算法（动态规划、回溯、贪心）                            │
+│  ├─ Python 算法库（collections、itertools、heapq）              │
+│  └─ LeetCode 实战（对应 ../../leetcode/ 目录）                  │
+│                                                                 │
+│  第4阶段：面向对象与进阶（3-4周）                                │
 │  ├─ 类与对象                                                    │
 │  ├─ 继承与多态                                                  │
 │  ├─ 魔术方法                                                    │
@@ -113,13 +130,13 @@ Python 核心技能
 │  ├─ 上下文管理器                                                │
 │  └─ 异步编程基础                                                │
 │                                                                 │
-│  第4阶段：方向选择（8-12周，选一深入）                           │
+│  第5阶段：方向选择（8-12周，选一深入）                           │
 │  ├─ Web 开发方向                                                │
 │  ├─ AI / LLM 方向 🔥 热门                                       │
 │  ├─ 数据科学方向                                                │
 │  └─ 自动化方向                                                  │
 │                                                                 │
-│  第5阶段：工程化实践（持续）                                     │
+│  第6阶段：工程化实践（持续）                                     │
 │  ├─ 代码规范（Black、isort、ruff）                              │
 │  ├─ 类型注解                                                    │
 │  ├─ 单元测试（pytest）                                          │
@@ -238,7 +255,157 @@ Python 核心技能
 
 ---
 
-### 第3阶段：面向对象与进阶（3-4周）
+### 第3阶段：数据结构与算法（4-6周）⭐ 面试必备
+
+> 本阶段对应 `../../leetcode/` 目录内容，包含 12 个专题、100+ 题目详解
+
+#### 学习资源
+
+| 资源 | 说明 |
+|------|------|
+| [LeetCode 专题](../../leetcode/) | 本项目刷题手册，Java/Python 双语 |
+| [Python 算法库](https://docs.python.org/zh-cn/3/library/) | collections、itertools、heapq |
+| [算法可视化](https://visualgo.net/) | 动态演示算法执行过程 |
+
+#### 周1：数组与字符串
+- [ ] **双指针技巧**
+  - 对撞指针（ lc-167 两数之和II）
+  - 快慢指针（ lc-125 验证回文串）
+  - Python 特性：逆序切片 `nums[::-1]`
+- [ ] **滑动窗口**
+  - 固定窗口（ lc-438 找字母异位词）
+  - 可变窗口（ lc-209 最小子数组、lc-3 无重复字符最长子串）
+  - Python 技巧：`collections.Counter`、`defaultdict`
+- [ ] **二分查找**
+  - 标准二分（ lc-704）
+  - 左/右边界（ lc-35）
+  - 旋转数组（ lc-33）
+  - Python 模块：`bisect`
+
+#### 周2：链表与哈希表
+- [ ] **链表操作**
+  - 反转链表（ lc-206）
+  - 合并有序链表（ lc-21）
+  - 环检测（ lc-141、lc-142）
+  - Python 定义：
+    ```python
+    class ListNode:
+        def __init__(self, val=0, next=None):
+            self.val = val
+            self.next = next
+    ```
+- [ ] **哈希表应用**
+  - 两数之和（ lc-1）
+  - 字母异位词分组（ lc-49）
+  - 和为K的子数组（ lc-560）
+  - Python 技巧：`dict.get()`、`setdefault()`、`collections.Counter`
+
+#### 周3：栈队列与树
+- [ ] **单调栈**
+  - 每日温度（ lc-739）
+  - 下一个更大元素（ lc-496）
+  - 柱状图最大矩形（ lc-84）
+  - Python：`list` 作为栈（`append`/`pop`）
+- [ ] **树的遍历**
+  - 前/中/后序（ lc-144/94/145）递归与迭代
+  - 层序遍历（ lc-102）BFS
+  - Python 定义：
+    ```python
+    class TreeNode:
+        def __init__(self, val=0, left=None, right=None):
+            self.val = val
+            self.left = left
+            self.right = right
+    ```
+
+#### 周4：图与堆
+- [ ] **图的遍历**
+  - 岛屿数量（ lc-200）DFS/BFS
+  - 课程表（ lc-207）拓扑排序
+  - 网络延迟时间（ lc-743）Dijkstra
+- [ ] **堆应用**
+  - TopK 问题（ lc-215、lc-347）
+  - 合并K个有序链表（ lc-23）
+  - Python：`heapq` 模块、`heapify()`、`heappush/pop`
+
+#### 周5-6：动态规划与回溯
+- [ ] **DP 入门**
+  - 爬楼梯（ lc-70）
+  - 最长递增子序列（ lc-300）
+  - 最长公共子序列（ lc-1143）
+  - Python 技巧：列表推导式初始化 DP 表
+- [ ] **回溯算法**
+  - 全排列（ lc-46、lc-47）
+  - 组合（ lc-77）
+  - 子集（ lc-78）
+  - N皇后（ lc-51）
+  - Python 技巧：`path.copy()` 避免引用问题
+
+#### Python 算法库速查
+
+```python
+# collections - 高级容器
+from collections import Counter, defaultdict, deque
+
+Counter('hello')              # 计数器
+defaultdict(int)              # 默认值字典
+deque([1,2,3])                # 双端队列（支持 O(1) 头部操作）
+
+# itertools - 迭代工具
+from itertools import combinations, permutations, accumulate
+
+list(combinations([1,2,3], 2))   # 组合 C(3,2)
+list(permutations([1,2,3]))      # 排列 3!
+list(accumulate([1,2,3,4]))       # 累加 [1,3,6,10]
+
+# heapq - 堆操作
+import heapq
+
+heapq.heappush(heap, item)        # 入堆
+heapq.heappop(heap)               # 出堆
+heapq.heapify(list)               # 原地建堆
+heapq.nlargest(k, iterable)       # 最大 k 个
+heapq.nsmallest(k, iterable)      # 最小 k 个
+
+# bisect - 二分查找
+import bisect
+
+bisect.bisect_left(arr, x)        # 第一个 >= x 的位置
+bisect.bisect_right(arr, x)       # 第一个 > x 的位置
+bisect.insort(arr, x)             # 插入并保持有序
+```
+
+#### LeetCode 刷题策略
+
+| 专题 | LeetCode 目录 | 必刷题目数 |
+|------|---------------|-----------|
+| 数组 | `01-array/` | 11 题 |
+| 字符串 | `02-string/` | 8 题 |
+| 链表 | `03-linked-list/` | 8 题 |
+| 哈希表 | `04-hash/` | 6 题 |
+| 栈队列 | `05-stack-queue/` | 9 题 |
+| 树 | `06-tree/` | 11 题 |
+| 堆 | `07-heap/` | 5 题 |
+| 图 | `08-graph/` | 9 题 |
+| 动态规划 | `09-dp/` | 13 题 |
+| 回溯 | `10-backtracking/` | 7 题 |
+| 贪心 | `11-greedy/` | 5 题 |
+
+**刷题建议：**
+1. 按专题顺序刷，不要随机
+2. 每题先自己想 10 分钟，再看题解
+3. 代码提交后，看讨论区的 Python 优秀解法
+4. 总结模板和模式（如滑动窗口模板、快慢指针模板）
+5. 一周后重做之前不会的题
+
+**阶段项目：**
+- LeetCode Easy 题：每天 2 道，连续 2 周
+- LeetCode Medium 题：每天 1 道，连续 4 周
+- 完成 3 个专题的全部题目（推荐：数组、链表、树）
+
+---
+
+### 第4阶段：面向对象与进阶（3-4周）
 
 #### 周1：OOP 基础
 - [ ] 类与对象
@@ -273,7 +440,7 @@ Python 核心技能
 
 ---
 
-### 第4阶段：方向选择（8-12周，选一）
+### 第5阶段：方向选择（8-12周，选一）
 
 #### Web 开发方向
 
@@ -405,7 +572,7 @@ Python 核心技能
 
 ---
 
-### 第5阶段：工程化实践（持续）
+### 第6阶段：工程化实践（持续）
 
 ```
 代码质量：
@@ -462,6 +629,19 @@ learn/python/
 │   ├── 05-modules.md           # 模块与包
 │   └── 06-exceptions.md        # 异常处理
 │
+├── algorithms/                  # 算法篇（对应 leetcode/）
+│   ├── README.md               # 算法学习总览
+│   ├── 01-data-structures.md   # 基础数据结构
+│   ├── 02-arrays-strings.md    # 数组与字符串
+│   ├── 03-linked-list.md       # 链表
+│   ├── 04-hash.md              # 哈希表
+│   ├── 05-stack-queue.md       # 栈与队列
+│   ├── 06-tree.md              # 树
+│   ├── 07-graph.md             # 图
+│   ├── 08-dp.md                # 动态规划
+│   ├── 09-backtracking.md      # 回溯
+│   └── 10-python-libs.md       # Python 算法库速查
+│
 ├── advanced/                    # 进阶篇
 │   ├── 01-oop.md               # 面向对象
 │   ├── 02-decorators.md        # 装饰器
@@ -493,11 +673,33 @@ learn/python/
 │   ├── 01-common-tasks.md      # 常见任务
 │   ├── 02-scripts.md           # 实用脚本
 │   ├── 03-projects.md          # 项目案例
-│   └── 04-interview.md         # 面试准备
+│   ├── 04-interview.md         # Python 面试题库
+│   └── 05-algo-cheatsheet.md   # 算法速查表
 │
 └── manual/                      # 速查手册
     └── README.md               # Python 速查手册
 ```
+
+---
+
+## LeetCode 刷题对照表
+
+| Python 算法章节 | 对应 LeetCode 专题 | 优先级 |
+|-----------------|-------------------|--------|
+| 02-arrays-strings.md | `01-array/`, `02-string/` | ⭐⭐⭐⭐⭐ |
+| 03-linked-list.md | `03-linked-list/` | ⭐⭐⭐⭐⭐ |
+| 04-hash.md | `04-hash/` | ⭐⭐⭐⭐ |
+| 05-stack-queue.md | `05-stack-queue/` | ⭐⭐⭐⭐ |
+| 06-tree.md | `06-tree/` | ⭐⭐⭐⭐⭐ |
+| 07-graph.md | `08-graph/` | ⭐⭐⭐ |
+| 08-dp.md | `09-dp/` | ⭐⭐⭐ |
+| 09-backtracking.md | `10-backtracking/` | ⭐⭐⭐ |
+
+**刷题顺序建议：**
+1. 数组 → 字符串 → 链表（基础必会）
+2. 哈希表 → 栈队列（进阶）
+3. 树 → 图（面试高频）
+4. 动态规划 → 回溯（高阶）
 
 ---
 
@@ -535,31 +737,33 @@ learn/python/
 
 ## 时间规划
 
-### 全职学习（3-4个月）
+### 全职学习（5-7个月）
 
 ```
-第1月：第1-2阶段（基础）
-第2月：第3阶段（进阶）
-第3-4月：第4阶段（方向深入）
-持续：第5阶段（工程化）
+第1月：第1-2阶段（环境 + 基础语法）
+第2月：第3阶段（数据结构与算法）⭐ 面试准备
+第3月：第4阶段（面向对象与进阶）
+第4-6月：第5阶段（方向深入）
+持续：第6阶段（工程化）
 ```
 
-### 业余学习（6-8个月）
+### 业余学习（8-12个月）
 
 ```
-第1-2月：第1-2阶段（基础）
-第3-4月：第3阶段（进阶）
-第5-8月：第4阶段（方向深入）
-持续：第5阶段（工程化）
+第1-2月：第1-2阶段（环境 + 基础语法）
+第3-4月：第3阶段（数据结构与算法）⭐ 重点
+第5-6月：第4阶段（面向对象与进阶）
+第7-10月：第5阶段（方向深入）
+持续：第6阶段（工程化）
 ```
 
 ### 每周时间分配
 
 ```
-理论学习：30%
-动手编码：50%
-项目实践：15%
-复习总结：5%
+理论学习：20%
+算法练习：30%  (LeetCode 对应 ../../leetcode/)
+动手编码：40%
+复习总结：10%
 ```
 
 ---
@@ -598,14 +802,24 @@ learn/python/
 
 ```python
 # 每日练习
-- 刷 1-2 道 LeetCode
-- 写一个小脚本
-- 阅读一段源码
+- 刷 1-2 道 LeetCode（对应 ../../leetcode/）
+  - Easy：10 分钟内完成
+  - Medium：30 分钟内完成
+  - 重点关注 Python 优雅写法
+- 写一个小脚本（文件处理、自动化）
+- 阅读一段源码（优秀开源项目）
 
 # 每周目标
 - 完成 1 个小项目
 - 写 1 篇学习笔记
 - 参与 1 次代码审查
+- 完成 1 个 LeetCode 专题（如数组、链表）
+
+# Python 算法练习重点
+- 掌握 collections、itertools、heapq、bisect 等标准库
+- 学会用列表推导式、生成器简化代码
+- 理解 Python 的内存模型（引用 vs 拷贝）
+- 熟练使用装饰器和上下文管理器
 ```
 
 ---
@@ -624,13 +838,16 @@ learn/python/
 
 ## 版本历史
 
+- **v1.1** (2025-01-29) - 新增数据结构与算法学习阶段，整合 LeetCode 刷题内容
 - **v1.0** (2025-01-29) - 初始版本，确定现代化工具栈
 
 ---
 
 ## 相关文档
 
+- [LeetCode 刷题手册](../../leetcode/PLAN.md) - 12 个专题、100+ 题目详解，Java/Python 双语
 - [AI 设计模式](../../patterns/ai/design-patterns.md)
+- [后端设计模式](../../patterns/backend/design-patterns.md)
 - [Linux 手册](../../manuals/linux/README.md)
 - [Git 手册](../../manuals/git/README.md)
 - [Neovim 配置](../../tools/neovim/lazyvim-setup.md)
