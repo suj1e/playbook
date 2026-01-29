@@ -101,6 +101,7 @@
 | `<Space>fh` | 查找帮助 |
 | `<Space>fn` | 查找通知 |
 | `<Space>e` | 文件浏览器 (Neo-tree) |
+H 显示/隐藏dotfiles(.github、.claude、.gitignore...)
 
 ### Git 操作
 

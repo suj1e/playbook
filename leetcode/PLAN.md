@@ -1,6 +1,23 @@
 # 力扣刷题手册 - 内容规划
 
 > 本文档详细规划了整个力扣刷题手册的内容结构，用于追踪完成进度。
+> 最后更新：2025-01-29
+
+## 📋 项目概述
+
+**目标**：构建一套系统化的力扣刷题手册，涵盖所有核心算法与数据结构专题，提供 Java 和 Python 双语言实现。
+
+**特色**：
+- 按专题分类，循序渐进
+- 每个专题包含通用模板、核心知识点、典型题目
+- Java 和 Python 双语实现
+- 详细的解题思路和复杂度分析
+- 关键点总结和变种延伸
+
+**目标读者**：
+- 准备算法面试的工程师
+- 需要系统复习数据结构与算法的开发者
+- 希望掌握多种编程语言实现的程序员
 
 ---
 
@@ -177,7 +194,15 @@ leetcode/
 
 ---
 
-## 文件模板
+## 📝 文件模板规范
+
+### 撰写原则
+
+1. **双语对照**：Java 和 Python 代码并列展示
+2. **思路清晰**：先讲思路，再给代码
+3. **完整详尽**：包含题目、思路、代码、复杂度、关键点、变种
+4. **实用导向**：模板代码可直接复制使用
+5. **渐进式**：从简单到复杂，循序渐进
 
 ### 1. 每个专题的 README.md 模板
 
@@ -216,6 +241,27 @@ leetcode/
 
 ### 2. 每个专题的 templates.md 模板
 
+**必须包含以下内容**：
+
+1. **数据结构定义**
+   - Java/Python 完整定义
+   - 包含构造函数、常用方法
+   - 添加注释说明各字段用途
+
+2. **核心操作模板**
+   - 每个操作的完整实现
+   - 双语对照
+   - 时间/空间复杂度标注
+
+3. **典型题目模式**
+   - 模式名称和适用场景
+   - 模板代码（可直接套用）
+   - 相关题目列表
+
+4. **常见陷阱**
+   - 列出该专题常见的易错点
+   - 给出正确的处理方式
+
 ```markdown
 # [专题名称] 代码模板
 
@@ -224,11 +270,22 @@ leetcode/
 ### Java
 ```java
 // 数据结构定义
+public class ListNode {
+    int val;
+    ListNode next;
+    ListNode() {}
+    ListNode(int val) { this.val = val; }
+    ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+}
 ```
 
 ### Python
 ```python
 # 数据结构定义
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
 ```
 
 ---
@@ -237,76 +294,211 @@ leetcode/
 
 ### 操作一：xxx
 
+**功能**：简要说明
+
 #### Java
 ```java
 // 模板代码
+public ListNode reverseList(ListNode head) {
+    // 实现
+}
 ```
+
+**复杂度**：O(n) 时间, O(1) 空间
 
 #### Python
 ```python
 # 模板代码
+def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+    # 实现
 ```
+
+**复杂度**：O(n) 时间, O(1) 空间
 
 ---
 
 ## 典型题目模式
 
 ### 模式一：xxx 模式
-- 适用场景：...
-- 模板代码：...
+- **适用场景**：描述什么情况下使用此模式
+- **识别特征**：题目中如何判断应该用这个模式
+- **模板代码**：
+  ```java
+  // 模板
+  ```
+- **相关题目**：[lc-xxx](../xxx), [lc-yyy](../yyy)
+
+---
+
+## 常见陷阱
+
+| 陷阱 | 说明 | 解决方案 |
+|------|------|----------|
+| 边界条件 | 忘记处理空指针 | 在循环开始前检查 |
+| ... | ... | ... |
 ```
 
 ### 3. 每道题目的文档模板
 
+**必须包含以下内容**：
+
+1. **元信息**
+   - 题号、中英文名称
+   - 双语链接
+   - 难度、标签、相似题目
+   - 频次统计（如果是高频题标注⭐）
+
+2. **题目描述**
+   - 完整的题目描述（中文）
+   - 示例（至少2个）
+
+3. **解题思路**
+   - 可能包含多种方法
+   - 每种方法：思路、复杂度、步骤
+
+4. **代码实现**
+   - Java 和 Python 完整代码
+   - 代码注释清晰
+   - 关键行标注
+
+5. **关键点**
+   - 表格形式
+   - 列出易错点和技巧
+
+6. **变种/延伸**
+   - 相关题目变种
+   - 进阶思考
+
 ```markdown
-# [题号] 题目英文名
+# [题号] 题目英文名 / 题目中文名
 
 [中文链接](https://leetcode.cn/problems/xxx/) | [English](https://leetcode.com/problems/xxx/)
 
 **难度**：Easy / Medium / Hard
 **标签**：数组 | 双指针
-**相似题目**：[lc-xxx](...)
+**相似题目**：[lc-xxx](...) | [lc-yyy](...)
+**面试频次**：⭐⭐⭐⭐⭐ (腾讯/字节/阿里高频)
 
 ---
 
 ## 题目描述
 
-...
+完整题目描述...
+
+**示例 1**：
+```
+输入：nums = [2,7,11,15], target = 9
+输出：[0,1]
+解释：因为 nums[0] + nums[1] == 9 ，返回 [0, 1] 。
+```
+
+**示例 2**：
+```
+输入：nums = [3,2,4], target = 6
+输出：[1,2]
+```
+
+**约束条件**：
+- 2 <= nums.length <= 10⁴
+- -10⁹ <= nums[i] <= 10⁹
 
 ---
 
 ## 解题思路
 
-### 方法一：方法名
+### 方法一：暴力枚举
 
-**思路**：详细的解题思路
+**思路**：
+双重循环枚举所有可能的两数组合，找到和为 target 的组合。
 
 **复杂度**：
-- 时间：O(n)
+- 时间：O(n²)
 - 空间：O(1)
 
 **步骤**：
-1. 第一步
-2. 第二步
+1. 外层循环 i 从 0 到 n-2
+2. 内层循环 j 从 i+1 到 n-1
+3. 如果 nums[i] + nums[j] == target，返回 [i, j]
+
+---
+
+### 方法二：哈希表
+
+**思路**：
+用哈希表存储每个数的索引，遍历时检查 target - nums[i] 是否在表中。
+
+**复杂度**：
+- 时间：O(n)
+- 空间：O(n)
+
+**步骤**：
+1. 创建哈希表 map
+2. 遍历数组，对于每个 nums[i]：
+   - 检查 target - nums[i] 是否在 map 中
+   - 如果存在，返回 [map[target-nums[i]], i]
+   - 否则，将 nums[i]: i 存入 map
+3. 无解返回空数组
 
 ---
 
 ## 代码实现
 
 ### Java
+
 ```java
 class Solution {
-    public int methodName(int[] nums) {
-        // 代码
+    // 方法一：暴力枚举
+    public int[] twoSum(int[] nums, int target) {
+        int n = nums.length;
+        for (int i = 0; i < n - 1; i++) {           // 外层循环
+            for (int j = i + 1; j < n; j++) {        // 内层循环，从 i+1 开始
+                if (nums[i] + nums[j] == target) {   // 找到目标
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return new int[]{};  // 无解
+    }
+
+    // 方法二：哈希表
+    public int[] twoSum(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();  // 数值 -> 索引
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];         // 目标补数
+            if (map.containsKey(complement)) {        // 检查补数是否存在
+                return new int[]{map.get(complement), i};
+            }
+            map.put(nums[i], i);                      // 存入当前数
+        }
+        return new int[]{};
     }
 }
 ```
 
 ### Python
+
 ```python
+from typing import List
+
 class Solution:
-    def methodName(self, nums: List[int]) -> int:
-        # 代码
+    # 方法一：暴力枚举
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        n = len(nums)
+        for i in range(n - 1):                # 外层循环
+            for j in range(i + 1, n):         # 内层循环
+                if nums[i] + nums[j] == target:
+                    return [i, j]
+        return []  # 无解
+
+    # 方法二：哈希表
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        num_map = {}  # 数值 -> 索引
+        for i, num in enumerate(nums):
+            complement = target - num          # 目标补数
+            if complement in num_map:          # 检查补数是否存在
+                return [num_map[complement], i]
+            num_map[num] = i                  # 存入当前数
+        return []
 ```
 
 ---
@@ -315,15 +507,29 @@ class Solution:
 
 | 关键点 | 说明 |
 |-------|------|
-| xxx | 说明 |
-| xxx | 说明 |
+| 互补数关系 | 两数之和为 target，则一数是另一数的补数 |
+| 先查后存 | 哈希表法必须先检查补数，再存入当前数（避免自己匹配自己） |
+| 边界条件 | 题目保证必有解，但代码仍应处理无解情况 |
+| 哈希表键值 | 键存数值，值存索引 |
 
 ---
 
 ## 变种/延伸
 
-- 变种1：...
-- 变种2：...
+### 变种1：数组已排序
+- 题目：[lc-167 两数之和 II - 输入有序数组](../01-array/01-two-pointers/lc-167-two-sum-ii.md)
+- 变化：数组升序排列
+- 解法：双指针（头尾向中间）
+
+### 变种2：返回所有组合
+- 题目：[lc-15 三数之和](../01-array/04-others/lc-15-3sum.md)
+- 变化：找出所有不重复的三元组，和为0
+- 解法：排序 + 双指针 + 去重
+
+### 进阶思考
+1. 如果数组中有重复元素怎么办？
+2. 如果要求返回所有可能的组合（不止一组）怎么办？
+3. 如果数组非常大（10⁹ 级别），无法全部加载到内存怎么办？
 ```
 
 ---
