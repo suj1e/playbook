@@ -44,6 +44,14 @@ playbook/
 │   ├── claude/
 │   └── cli/
 │
+├── leetcode/          # ⭐ 力扣刷题手册
+│   ├── 00-templates/  # 通用模板
+│   ├── 01-array/      # 数组专题
+│   ├── 02-string/     # 字符串专题
+│   ├── 03-linked-list/# 链表专题
+│   ├── 04-hash/       # 哈希表专题
+│   └── ...
+│
 └── drafts/            # 草稿 / 未整理
 ```
 
@@ -57,6 +65,7 @@ playbook/
 | **patterns** | 架构与设计模式：后端、前端、分布式系统常用模式 |
 | **checklists** | 各类检查清单：上线前检查、事故处理、迁移清单等 |
 | **tools** | 开发工具配置：Neovim、LazyVim、Wezterm、Zellij、CLI 工具等 |
+| **leetcode** | ⭐ 力扣刷题手册：系统化的刷题指南，Java + Python 双语言实现 |
 | **drafts** | 待整理的草稿内容 |
 
 ## 使用方式
