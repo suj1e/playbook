@@ -95,6 +95,7 @@ tab_position "top"
 | 切换 Pane | `Alt + ↑` / `↓` / `←` / `→` |
 | 关闭 Pane | `Ctrl + p` 然后 `x` |
 | 全屏 Pane | `Ctrl + Shift + x` |
+Ctrl + n → hjkl / 方向键 调整窗口size
 
 ### Tab 操作
 
