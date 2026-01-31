@@ -77,7 +77,7 @@ jobs:
     - name: Run integration tests
       run: npm run test:integration
       env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+        DATABASE_URL: mysql://mysql:mysql@localhost:3306/test_db
 
     - name: Run security audit
       run: |

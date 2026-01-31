@@ -291,7 +291,7 @@ step2_prompt = ChatPromptTemplate(
 | Weaviate | 开源、GraphQL | 自建方案 |
 | Milvus | 开源、高性能 | 大规模部署 |
 | Chroma | 轻量级、嵌入 | 本地开发 |
-| pgvector | PostgreSQL 插件 | 现有 PG 架构 |
+| pgvector | MySQL 插件 | 现有 MySQL 架构 |
 
 ### 5.3 实现示例
 

@@ -24,7 +24,7 @@
 | HTTP 通信 | @HttpExchange        | 同步查询     |
 | 消息队列    | **Kafka**            | 事件中枢     |
 | 任务调度    | **Quartz（集群）**       | 时间驱动     |
-| 数据库     | PostgreSQL           | 各服务私有    |
+| 数据库     | MySQL                | 各服务私有    |
 | 缓存      | Redis + Caffeine     | 多级缓存     |
 | 搜索      | Elasticsearch        | 搜索 / 分析  |
 | 分布式 ID  | Snowflake            | 全局唯一     |
@@ -486,7 +486,7 @@ Quartz 集群不使用 ZooKeeper/Redis，而是**直接用数据库**协调：
   ↓                        ↓                        ↓
   └──────────────┬───────────────────────┘
                  ↓
-         共享数据库（PostgreSQL）
+         共享数据库（MySQL）
                  ↓
          QRTZ_* 表（11张表）
                  ↓
