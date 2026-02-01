@@ -23,11 +23,11 @@
 
 1. 先阅读 [templates.md](./templates.md) 熟悉 DP 思想和模板
 2. 按顺序完成各分类题目：
-   - [ ] 01-climbing（线性 DP 入门）
-   - [ ] 02-knapsack（背包问题）
-   - [ ] 03-subsequence（子序列问题）
-   - [ ] 04-interval（区间 DP）
-   - [ ] 05-stock（股票问题）
+   - [x] 01-climbing（线性 DP 入门）
+   - [x] 02-knapsack（背包问题）
+   - [x] 03-subsequence（子序列问题）
+   - [x] 04-interval（区间 DP）
+   - [x] 05-stock（股票问题）
 
 ---
 
@@ -46,24 +46,24 @@
 ## 进度追踪
 
 ### 01-climbing
-- [ ] lc-70-climbing-stairs (Easy)
-- [ ] lc-746-min-cost-climbing-stairs (Easy)
+- [x] lc-70-climbing-stairs (Easy)
+- [x] lc-746-min-cost-climbing-stairs (Easy)
 
 ### 02-knapsack
-- [ ] lc-416-partition-equal-subset-sum (Medium)
-- [ ] lc-494-target-sum (Medium)
+- [x] lc-416-partition-equal-subset-sum (Medium)
+- [x] lc-494-target-sum (Medium)
 
 ### 03-subsequence
-- [ ] lc-300-longest-increasing-subsequence (Medium)
-- [ ] lc-1143-longest-common-subsequence (Medium)
-- [ ] lc-72-edit-distance (Medium)
+- [x] lc-300-longest-increasing-subsequence (Medium)
+- [x] lc-1143-longest-common-subsequence (Medium)
+- [x] lc-72-edit-distance (Medium)
 
 ### 04-interval
-- [ ] lc-516-longest-palindromic-subsequence (Medium)
+- [x] lc-516-longest-palindromic-subsequence (Medium)
 
 ### 05-stock
-- [ ] lc-121-best-time-to-buy-and-sell-stock (Medium)
-- [ ] lc-122-best-time-to-buy-and-sell-stock-ii (Medium)
+- [x] lc-121-best-time-to-buy-and-sell-stock (Medium)
+- [x] lc-122-best-time-to-buy-and-sell-stock-ii (Medium)
 
 ---
 

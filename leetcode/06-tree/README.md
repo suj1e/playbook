@@ -21,10 +21,10 @@
 
 1. 先阅读 [templates.md](./templates.md) 熟悉二叉树操作模板
 2. 按顺序完成各分类题目：
-   - [ ] 01-traversal（遍历，基础必做）
-   - [ ] 02-properties（树的性质）
-   - [ ] 03-bst（二叉搜索树）
-   - [ ] 04-lca（最近公共祖先）
+   - [x] 01-traversal（遍历，基础必做）
+   - [x] 02-properties（树的性质）
+   - [x] 03-bst（二叉搜索树）
+   - [x] 04-lca（最近公共祖先）
 
 ---
 
@@ -42,22 +42,22 @@
 ## 进度追踪
 
 ### 01-traversal
-- [ ] lc-144-binary-tree-preorder-traversal (Easy)
-- [ ] lc-94-binary-tree-inorder-traversal (Easy)
-- [ ] lc-145-binary-tree-postorder-traversal (Easy)
-- [ ] lc-102-binary-tree-level-order-traversal (Medium)
+- [x] lc-144-binary-tree-preorder-traversal (Easy)
+- [x] lc-94-binary-tree-inorder-traversal (Easy)
+- [x] lc-145-binary-tree-postorder-traversal (Easy)
+- [x] lc-102-binary-tree-level-order-traversal (Medium)
 
 ### 02-properties
-- [ ] lc-104-maximum-depth-of-binary-tree (Easy)
-- [ ] lc-110-balanced-binary-tree (Easy)
-- [ ] lc-236-lowest-common-ancestor-of-a-binary-tree (Medium)
+- [x] lc-104-maximum-depth-of-binary-tree (Easy)
+- [x] lc-110-balanced-binary-tree (Easy)
+- [x] lc-226-invert-binary-tree (Easy)
 
 ### 03-bst
-- [ ] lc-98-validate-binary-search-tree (Medium)
-- [ ] lc-230-kth-smallest-element-in-a-bst (Medium)
+- [x] lc-98-validate-binary-search-tree (Medium)
+- [x] lc-230-kth-smallest-element-in-a-bst (Medium)
 
 ### 04-lca
-- [ ] lc-236-lowest-common-ancestor-of-a-binary-tree (Medium)
+- [x] lc-236-lowest-common-ancestor-of-a-binary-tree (Medium)
 
 ---
 

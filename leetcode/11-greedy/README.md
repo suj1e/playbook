@@ -1,4 +1,4 @@
-# 贪心专题
+# 11-greedy / 贪心专题
 
 ## 专题概述
 
@@ -9,7 +9,7 @@
 
 ### 核心知识点
 
-1. 贪心选择性质
+1. 贪心选择性质：局部最优 → 全局最优
 2. 最优子结构
 3. 贪心策略的正确性证明
 
@@ -19,7 +19,7 @@
 
 1. 先阅读 [templates.md](./templates.md) 熟悉贪心思想
 2. 按顺序完成各分类题目：
-   - [ ] 01-interval（区间问题）
+   - [x] 01-interval（区间问题）
    - [ ] 02-scheduling（调度问题）
 
 ---
@@ -36,7 +36,7 @@
 ## 进度追踪
 
 ### 01-interval
-- [ ] lc-56-merge-intervals (Medium)
+- [x] lc-56-merge-intervals (Medium)
 - [ ] lc-435-non-overlapping-intervals (Medium)
 
 ### 02-scheduling
@@ -54,9 +54,6 @@ Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
 
 // 按区间终点排序
 Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
-
-// 按区间长度排序
-Arrays.sort(intervals, (a, b) -> (a[1] - a[0]) - (b[1] - b[0]));
 ```
 
 ### 区间合并模板
@@ -68,7 +65,7 @@ public int[][] merge(int[][] intervals) {
     // 按起点排序
     Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
 
-    List<int[]> result = new ArrayList<>();
+    List<int[]> merged = new ArrayList<>();
     int[] current = intervals[0];
 
     for (int i = 1; i < intervals.length; i++) {
@@ -76,14 +73,14 @@ public int[][] merge(int[][] intervals) {
             // 有重叠，合并
             current[1] = Math.max(current[1], intervals[i][1]);
         } else {
-            // 无重叠，添加当前区间
-            result.add(current);
+            // 无重叠，加入结果
+            merged.add(current);
             current = intervals[i];
         }
     }
-    result.add(current);
+    merged.add(current);
 
-    return result.toArray(new int[result.size()][]);
+    return merged.toArray(new int[merged.size()][]);
 }
 ```
 
@@ -105,32 +102,9 @@ public int eraseOverlapIntervals(int[][] intervals) {
             count++;
             end = intervals[i][1];
         }
-        // 有重叠，跳过（相当于删除）
     }
 
     return intervals.length - count;
-}
-```
-
-### 区间调度问题模板
-
-```java
-// 最多能参加多少个不重叠的活动
-public int maxActivities(int[][] intervals) {
-    // 按结束时间排序
-    Arrays.sort(intervals, (a, b) -> a[1] - b[1]);
-
-    int count = 1;
-    int end = intervals[0][1];
-
-    for (int i = 1; i < intervals.length; i++) {
-        if (intervals[i][0] >= end) {
-            count++;
-            end = intervals[i][1];
-        }
-    }
-
-    return count;
 }
 ```
 

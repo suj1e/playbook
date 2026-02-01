@@ -20,8 +20,8 @@
 
 1. 先阅读 [templates.md](./templates.md) 熟悉堆操作模板
 2. 按顺序完成各分类题目：
-   - [ ] 01-top-k（TopK 问题）
-   - [ ] 02-merge（合并问题）
+   - [x] 01-top-k（TopK 问题）
+   - [x] 02-merge（合并问题）
 
 ---
 
@@ -37,11 +37,11 @@
 ## 进度追踪
 
 ### 01-top-k
-- [ ] lc-215-kth-largest-element-in-an-array (Medium)
-- [ ] lc-347-top-k-frequent-elements (Medium)
+- [x] lc-215-kth-largest-element-in-an-array (Medium)
+- [x] lc-347-top-k-frequent-elements (Medium)
 
 ### 02-merge
-- [ ] lc-23-merge-k-sorted-lists (Hard)
+- [x] lc-23-merge-k-sorted-lists (Hard)
 
 ---
 

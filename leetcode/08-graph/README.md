@@ -22,10 +22,10 @@
 
 1. 先阅读 [templates.md](./templates.md) 熟悉图操作模板
 2. 按顺序完成各分类题目：
-   - [ ] 01-dfs-bfs（图的遍历）
-   - [ ] 02-topological（拓扑排序）
-   - [ ] 03-shortest-path（最短路径）
-   - [ ] 04-union-find（并查集）
+   - [x] 01-dfs-bfs（图的遍历）
+   - [x] 02-topological（拓扑排序）
+   - [x] 03-shortest-path（最短路径）
+   - [x] 04-union-find（并查集）
 
 ---
 
@@ -43,19 +43,19 @@
 ## 进度追踪
 
 ### 01-dfs-bfs
-- [ ] lc-200-number-of-islands (Medium)
-- [ ] lc-797-all-paths-from-source-to-target (Medium)
-- [ ] lc-994-rotting-oranges (Medium)
+- [x] lc-200-number-of-islands (Medium)
+- [x] lc-797-all-paths-from-source-to-target (Medium)
+- [x] lc-994-rotting-oranges (Medium)
 
 ### 02-topological
-- [ ] lc-207-course-schedule (Medium)
+- [x] lc-207-course-schedule (Medium)
 
 ### 03-shortest-path
-- [ ] lc-743-network-delay-time (Medium)
+- [x] lc-743-network-delay-time (Medium)
 
 ### 04-union-find
-- [ ] lc-200-number-of-islands (Medium)
-- [ ] lc-547-number-of-provinces (Medium)
+- [x] lc-200-number-of-islands (Medium)
+- [x] lc-547-number-of-provinces (Medium)
 
 ---
 
